@@ -4,7 +4,7 @@ from telebot import TeleBot
 from telebot.types import ReplyKeyboardMarkup, KeyboardButton
 from config import TOKEN, ADMINS, PLANS
 from storage import load_users, save_users
-from utils import generate_config, notify_expiration, schedule_reminders
+from utils import generate_conf as generate_config, notify_expiration, schedule_reminders
 import threading
 import time
 

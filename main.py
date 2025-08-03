@@ -1,15 +1,14 @@
+# main.py
+
 from telebot import TeleBot
 from telebot.types import ReplyKeyboardMarkup, KeyboardButton
 from config import TOKEN, ADMINS, PLANS
-from storage import load_users, save_users, init_files
+from storage import load_users, save_users
 from utils import generate_config, notify_expiration, schedule_reminders
 import threading
 import time
 
 bot = TeleBot(TOKEN)
-
-# Inicializar archivos necesarios
-init_files()
 
 # Teclado principal del usuario
 def get_main_menu():

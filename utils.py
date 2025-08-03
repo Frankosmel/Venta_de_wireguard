@@ -3,10 +3,12 @@
 import subprocess
 import os
 import ipaddress
-from config import WG_CONFIG_DIR, SERVER_PUBLIC_IP, LISTEN_PORT
+from config import WG_CONFIG_DIR, SERVER_PUBLIC_IP, LISTEN_PORT, VENCIMIENTO_AVISOS_HORAS
 import qrcode
 import base64
 from io import BytesIO
+from storage import load_users
+from datetime import datetime, timedelta
 
 def generate_keypair():
     """
@@ -86,3 +88,26 @@ def delete_conf(client_name):
         os.remove(path)
         return True
     return False
+
+def notify_expiration(bot):
+    """
+    Notifica a los usuarios cuyo plan está por vencer según VENCIMIENTO_AVISOS_HORAS.
+    """
+    users = load_users()
+    ahora = datetime.now()
+    for uid, data in users.items():
+        try:
+            vencimiento = datetime.strptime(data['expires'], "%Y-%m-%d %H:%M:%S")
+            horas_restantes = (vencimiento - ahora).total_seconds() / 3600
+            for horas in VENCIMIENTO_AVISOS_HORAS:
+                if abs(horas_restantes - horas) < 0.5:
+                    bot.send_message(uid, f"⚠️ Tu configuración expira en {int(horas)} horas. ¡Renueva a tiempo para no quedarte sin conexión!")
+        except Exception:
+            continue
+
+def schedule_reminders():
+    """
+    Placeholder por si deseas más adelante programar acciones desde utils.
+    Actualmente no hace nada.
+    """
+    pass
